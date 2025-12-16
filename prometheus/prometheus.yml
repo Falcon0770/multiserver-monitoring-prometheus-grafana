@@ -19,7 +19,7 @@ scrape_configs:
     static_configs:
       - targets: ['node-exporter:9100']
         labels:
-          instance: 'main-server'
+          instance: '10.20.0.39 (OS)'
           server: 'main-server'
           environment: 'production'
 
@@ -28,7 +28,7 @@ scrape_configs:
     static_configs:
       - targets: ['mysql-exporter:9104']
         labels:
-          instance: 'main-server-mysql'
+          instance: '10.20.0.39(mysql)'
           server: 'main-server'
           environment: 'production'
 
