@@ -1,0 +1,68 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Monitor Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          instance: 'prometheus-server'
+
+  # ============================================
+  # MAIN SERVER (where Prometheus + Grafana run)
+  # ============================================
+  
+  # Monitor this Linux server via Node Exporter
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'main-server'
+          server: 'main-server'
+          environment: 'production'
+
+  # Monitor MySQL database on main server
+  - job_name: 'mysql-exporter'
+    static_configs:
+      - targets: ['mysql-exporter:9104']
+        labels:
+          instance: 'main-server-mysql'
+          server: 'main-server'
+          environment: 'production'
+
+  # ============================================
+  # REMOTE SERVER 1 (replace with actual IP)
+  # ============================================
+  
+  # Monitor remote Linux server via Node Exporter
+  - job_name: 'node-exporter-remote1'
+    static_configs:
+      - targets: ['REMOTE_SERVER_1_IP:9100']  # <-- Replace with actual IP
+        labels:
+          instance: 'remote-server-1'
+          server: 'remote-server-1'
+          environment: 'production'
+
+  # Monitor MySQL database on remote server 1 (if applicable)
+  - job_name: 'mysql-exporter-remote1'
+    static_configs:
+      - targets: ['REMOTE_SERVER_1_IP:9104']  # <-- Replace with actual IP
+        labels:
+          instance: 'remote-server-1-mysql'
+          server: 'remote-server-1'
+          environment: 'production'
+
+  # ============================================
+  # REMOTE SERVER 2 (add more as needed)
+  # ============================================
+  
+  # - job_name: 'node-exporter-remote2'
+  #   static_configs:
+  #     - targets: ['REMOTE_SERVER_2_IP:9100']
+  #       labels:
+  #         instance: 'remote-server-2'
+  #         server: 'remote-server-2'
+  #         environment: 'production'
+

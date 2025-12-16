@@ -1,0 +1,26 @@
+# Data directories (these are generated/runtime data)
+data/
+*.db
+
+# Sensitive files
+mysql-exporter/.my.cnf
+remote-server/.my.cnf
+remote-server-setup/.my.cnf
+.env
+
+# Prometheus runtime files
+*.active
+lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.backup
+*.backup.*
+*.bak
+
+# Log files
+*.log
+
