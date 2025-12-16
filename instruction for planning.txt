@@ -1,0 +1,217 @@
+📡 Infrastructure Monitoring Proposal (Open-Source Stack)
+Prometheus + Grafana + Alertmanager (Linux + Windows Servers)
+📌 Purpose
+
+We need a centralized and cost-effective monitoring system to observe performance, health, and availability of ~20 mixed servers (Linux + Windows) and send automated alerts when issues occur.
+
+🏗️ Proposed Architecture
+ ┌────────────────────┐      ┌─────────────────────┐
+ |   Linux Servers     |      |   Windows Servers    |
+ | (Node Exporter)     |      | (Windows Exporter)   |
+ └─────────┬──────────┘      └──────────┬──────────┘
+           │                               │
+           ▼                               ▼
+     ┌──────────────────────────────────────────────┐
+     |                 Prometheus                    |
+     | Collects metrics from all servers             |
+     └───────────────┬──────────────────────────────┘
+                     │
+                     ▼
+     ┌──────────────────────────────────────────────┐
+     |                Alertmanager                   |
+     | Sends alerts via Email / Chat (optional)      |
+     └───────────────┬──────────────────────────────┘
+                     │
+                     ▼
+     ┌──────────────────────────────────────────────┐
+     |                    Grafana                    |
+     | Dashboards, reports, trends visualization     |
+     └──────────────────────────────────────────────┘
+
+🔍 How It Works (Simple Explanation)
+1️⃣ Agent on Each Server
+
+Linux servers use an open-source agent called Node Exporter
+
+Windows servers use Windows Exporter
+
+These agents collect system metrics like:
+✔ CPU usage
+✔ Memory usage
+✔ Disk usage
+✔ Network usage
+✔ System uptime
+
+2️⃣ Prometheus Collects Metrics
+
+Prometheus fetches metrics from all servers at regular intervals (every 15 seconds).
+
+Data is stored in its internal time-series database.
+
+Prometheus is lightweight, open source, and scales well.
+
+3️⃣ Alertmanager Sends Notifications
+
+Pre-defined rules trigger alerts (e.g., >85% CPU for 5 minutes, low disk).
+
+Alertmanager sends notifications via:
+✉️ Email (default)
+💬 Telegram / Slack / MS Teams (optional)
+
+Alerts include which server is affected and what metric is critical.
+
+4️⃣ Grafana for Dashboards
+
+Grafana visualizes data using charts, gauges, and reports.
+
+Real-time monitoring dashboard for all servers.
+
+Prebuilt dashboards available for both Linux and Windows.
+
+Managers can view historical performance trends.
+
+🎯 Benefits to the Organization
+Benefit	Impact
+Open Source (No Licensing Cost)	Saves ongoing expense
+Centralized Monitoring	Single dashboard for all 20+ servers
+Email Alerts for Issues	Faster troubleshooting & reduced downtime
+Supports Both Windows & Linux	Works in mixed environments
+Easily Scalable	Can add more servers anytime
+Exportable Reports	Helps in capacity planning & audits
+💰 Cost Summary
+Component	License Cost	Remarks
+Prometheus	₹0	Open Source
+Grafana	₹0	Open Source
+Alertmanager	₹0	Included with Prometheus
+Linux Exporter	₹0	Open Source
+Windows Exporter	₹0	Open Source
+Infrastructure (1 VM to host monitoring)	Minimal	One small VM or existing VM
+
+📌 Total Software Cost = ₹0 (Fully Open Source)
+
+⚠️ Risks & Mitigation
+Risk	Mitigation
+Exporter not installed → Server not monitored	We maintain a checklist with periodic verification
+Storage growth	Rotation & retention policy in Prometheus
+Access security	Restrict Grafana/Prometheus via firewall + user roles
+⏱️ Implementation Timeline
+Task	Duration
+Setup Monitoring Server	1–2 days
+Install agents on Linux & Windows	2–3 days
+Configure alerts & dashboards	1–2 days
+Testing, Tuning & Documentation	1–2 days
+Total Estimated Time	5–7 days
+
+*******************************************************************
+we'll do this in phases
+*******************************************************************
+
+🧪 Phase-1 POC Plan (Pilot with 1 Linux Server)
+🎯 Goal
+
+✔ Setup full monitoring stack on 1 Linux server
+✔ Monitor the same server itself (self-monitoring)
+✔ Demonstrate dashboards + email alerts
+
+🛠️ What you will install on the Linux server
+Component	Purpose
+Prometheus	Collect metrics
+Alertmanager	Trigger alerts
+Grafana	Dashboards
+Node Exporter	Monitor this Linux server
+SMTP Config	Send alert emails
+
+⚠️ All installed on the same machine temporarily, just for demo.
+
+🧱 Step-By-Step Setup (POC)
+📌 1) Install Prometheus
+
+Run Prometheus service
+
+Configure it to scrape itself via localhost:9090
+
+Dashboard in browser should work
+
+📌 2) Install Node Exporter
+
+Setup node exporter as service
+
+Add target in Prometheus config
+
+Check metrics visible
+
+📌 3) Add Alertmanager
+
+Configure email alerts
+
+Test alert: Trigger a fake alert by lowering threshold
+
+📌 4) Install Grafana
+
+Add Prometheus data source
+
+Import dashboard ID 1860 (Linux System Monitoring)
+
+Show real-time server metrics
+
+📌 5) Document Results
+
+Take screenshots of:
+
+Prometheus targets page (showing UP status)
+
+Grafana dashboard real data
+
+Email alert received in inbox
+
+📍 These screenshots = Success Proof
+
+🪟 Phase-2 POC (Add 1 Windows Server)
+
+After Linux monitoring is proven:
+
+🎯 Goal for Phase-2
+
+✔ Monitor two servers from same Linux monitoring host
+✔ Linux as + Windows as monitored targets
+✔ Show both dashboards + alerts
+
+📌 Steps
+
+Team provides 1 Windows server
+
+Install Windows Exporter (9182)
+
+Add its IP to Prometheus config
+
+Import Windows Dashboard ID 13978 in Grafana
+
+Trigger Windows alert (CPU or Disk threshold hack)
+
+Screenshot + Documentation again
+
+🏗️ Phase-3 (Final Production Setup)
+
+After POC success, you will:
+
+✔ Create a separate, dedicated monitoring VM
+✔ Move all components to it
+✔ Use remote targets only (no monitoring self-load)
+✔ Setup backup, retention, role-based access, HTTPS, firewall rules
+
+Component	Location
+Prometheus	Dedicated Monitoring VM
+Grafana	Same
+Alertmanager	Same
+Exporters	On every server
+📌 What You Should Document at Every Step
+Documentation Item	Why
+Server IP, hostname	Tracking
+Exporter install commands	Repeatability
+Prometheus scrape config	Future expansion
+SMTP settings (without password)	Security + reuse
+Alert thresholds	Approval
+Dashboard IDs used	Standardization
+Screenshots	Proof of success
+
+Keep this as Company Monitoring Knowledgebase.

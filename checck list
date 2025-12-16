@@ -1,0 +1,119 @@
+## 📋 Complete Checklist: What You Need Before We Start
+
+### 🖥️ **1. Monitoring Server (Where Prometheus/Grafana Will Run)**
+
+| Item | Example | Required? |
+|------|---------|-----------|
+| Server IP (internal/private) | `192.168.1.100` | ✅ Yes |
+| Server hostname | `monitoring-server` | Optional |
+| OS version | Ubuntu 22.04 / RHEL 8 | ✅ Yes |
+| Docker installed? | Yes / No | ✅ Yes (for Docker approach) |
+| Docker Compose installed? | Yes / No | ✅ Yes (for Docker approach) |
+| Available RAM | Minimum 2GB recommended | ✅ Yes |
+| Available Disk | Minimum 20GB for metrics storage | ✅ Yes |
+
+---
+
+### 🐧 **2. Linux Servers to Monitor (Phase 1: Start with 1)**
+
+| Item | Example | Required? |
+|------|---------|-----------|
+| Server IP | `192.168.1.101` | ✅ Yes |
+| Hostname | `linux-server-01` | Optional (for labels) |
+| SSH access? | Yes / No | ✅ Yes (to install Node Exporter) |
+| Port 9100 open in firewall? | Yes / No | ✅ Yes |
+| Environment label | `production` / `staging` / `dev` | Optional |
+
+---
+
+### 🪟 **3. Windows Servers to Monitor (Phase 2: For Later)**
+
+| Item | Example | Required? |
+|------|---------|-----------|
+| Server IP | `192.168.1.201` | ✅ Yes |
+| Hostname | `windows-server-01` | Optional |
+| Admin access? | Yes / No | ✅ Yes (to install Windows Exporter) |
+| Port 9182 open in firewall? | Yes / No | ✅ Yes |
+
+---
+
+### 📧 **4. SMTP Details (For Email Alerts)**
+
+| Item | Example | Required? |
+|------|---------|-----------|
+| SMTP Server | `smtp.gmail.com` / `smtp.office365.com` / `mail.yourcompany.com` | ✅ Yes |
+| SMTP Port | `587` (TLS) / `465` (SSL) / `25` (no encryption) | ✅ Yes |
+| Authentication required? | Yes / No | ✅ Yes |
+| SMTP Username | `alerts@yourcompany.com` | ✅ If auth required |
+| SMTP Password / App Password | `your-app-password` | ✅ If auth required |
+| From Email Address | `monitoring-alerts@yourcompany.com` | ✅ Yes |
+| To Email Address(es) | `sysadmin@yourcompany.com`, `team@yourcompany.com` | ✅ Yes |
+| TLS enabled? | Yes / No | ✅ Yes |
+
+> ⚠️ **Gmail Note**: If using Gmail, you need an **App Password** (not your regular password). Enable 2FA first, then generate App Password.
+
+---
+
+### 🔐 **5. Credentials & Security**
+
+| Item | Example | Required? |
+|------|---------|-----------|
+| Grafana admin password | `YourSecurePassword123!` | ✅ Yes (or use default `admin`) |
+| Prometheus basic auth? | Yes / No | Optional (recommended for production) |
+| HTTPS/SSL certificates? | Yes / No | Optional (recommended for production) |
+
+---
+
+### 🌐 **6. Network & Firewall**
+
+| Port | Service | Direction | Required? |
+|------|---------|-----------|-----------|
+| `9090` | Prometheus Web UI | Inbound to monitoring server | ✅ Yes |
+| `9093` | Alertmanager Web UI | Inbound to monitoring server | Optional |
+| `3000` | Grafana Web UI | Inbound to monitoring server | ✅ Yes |
+| `9100` | Node Exporter | Inbound on Linux servers | ✅ Yes |
+| `9182` | Windows Exporter | Inbound on Windows servers | ✅ Yes (Phase 2) |
+
+---
+
+### 📝 **7. Optional (Nice to Have)**
+
+| Item | Purpose |
+|------|---------|
+| Telegram Bot Token + Chat ID | For Telegram alerts |
+| Slack Webhook URL | For Slack alerts |
+| MS Teams Webhook URL | For Teams alerts |
+| Company logo URL | For Grafana branding |
+| Data retention period | How long to keep metrics (default 15 days) |
+
+---
+
+## ✅ Quick Summary - Minimum Required for Phase 1 POC
+
+```
+📦 PHASE 1 MINIMUM REQUIREMENTS:
+
+1. MONITORING SERVER
+   - IP: _______________
+   - Docker installed: Yes/No
+   - Docker Compose installed: Yes/No
+
+2. LINUX SERVER TO MONITOR (can be same as above for self-monitoring)
+   - IP: _______________
+   - SSH access: Yes/No
+
+3. SMTP DETAILS
+   - SMTP Server: _______________
+   - SMTP Port: _______________
+   - Username: _______________
+   - Password: _______________ (keep secure)
+   - From Email: _______________
+   - To Email: _______________
+
+4. GRAFANA
+   - Admin Password: _______________ (or use 'admin')
+```
+
+---
+
+Fill this out and share with me (you can mask the password with `***`), and I'll generate all the configuration files for you! 🚀
