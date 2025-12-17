@@ -178,7 +178,7 @@ host=$MYSQL_HOST
 port=$MYSQL_PORT
 MYCNF_EOF
 
-    chmod 600 .my.cnf
+    chmod 644 .my.cnf
     echo -e "${GREEN}✓ MySQL exporter configured${NC}"
 fi
 

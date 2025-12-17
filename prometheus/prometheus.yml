@@ -33,36 +33,22 @@ scrape_configs:
           environment: 'production'
 
   # ============================================
-  # REMOTE SERVER 1 (replace with actual IP)
+  # aicertlmsdevlearndb (10.20.0.38)
+  # Added: 2025-12-17
   # ============================================
   
-  # Monitor remote Linux server via Node Exporter
-  - job_name: 'node-exporter-remote1'
+  - job_name: 'node-exporter-aicertlmsdevlearndb'
     static_configs:
-      - targets: ['REMOTE_SERVER_1_IP:9100']  # <-- Replace with actual IP
+      - targets: ['10.20.0.38:9100']
         labels:
-          instance: 'remote-server-1'
-          server: 'remote-server-1'
-          environment: 'production'
+          instance: '10.20.0.38 (OS)'
+          server: 'aicertlmsdevlearndb'
+          environment: 'development'
 
-  # Monitor MySQL database on remote server 1 (if applicable)
-  - job_name: 'mysql-exporter-remote1'
+  - job_name: 'mysql-exporter-aicertlmsdevlearndb'
     static_configs:
-      - targets: ['REMOTE_SERVER_1_IP:9104']  # <-- Replace with actual IP
+      - targets: ['10.20.0.38:9104']
         labels:
-          instance: 'remote-server-1-mysql'
-          server: 'remote-server-1'
-          environment: 'production'
-
-  # ============================================
-  # REMOTE SERVER 2 (add more as needed)
-  # ============================================
-  
-  # - job_name: 'node-exporter-remote2'
-  #   static_configs:
-  #     - targets: ['REMOTE_SERVER_2_IP:9100']
-  #       labels:
-  #         instance: 'remote-server-2'
-  #         server: 'remote-server-2'
-  #         environment: 'production'
-
+          instance: '10.20.0.38 (MySQL)'
+          server: 'aicertlmsdevlearndb'
+          environment: 'development'
