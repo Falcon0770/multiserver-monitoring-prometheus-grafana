@@ -41,14 +41,25 @@ if [[ ! $REMOTE_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     exit 1
 fi
 
-# Get name
+# Get server name (for job naming)
 echo ""
-echo "Enter a name for this server (this will appear in Grafana)"
-echo "Examples: web-server-01, database-prod, app-server-staging"
+echo "Enter a short name for this server (used internally)"
+echo "Examples: web-01, db-prod, app-staging"
 read -p "Server Name: " SERVER_NAME
 
 # Validate name (no spaces, lowercase)
 SERVER_NAME=$(echo "$SERVER_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+# Get instance display name (what appears in Grafana dropdown)
+echo ""
+echo -e "${YELLOW}Enter the INSTANCE NAME that will appear in Grafana dropdown menu${NC}"
+echo "Examples: 10.20.0.50 (Web Server), Production-DB, App-Server-01"
+read -p "Instance Display Name: " INSTANCE_NAME
+
+# If empty, default to IP
+if [ -z "$INSTANCE_NAME" ]; then
+    INSTANCE_NAME="$REMOTE_IP"
+fi
 
 # Get environment
 echo ""
@@ -73,9 +84,10 @@ echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${YELLOW}You are adding:${NC}"
 echo ""
-echo "  Server Name:   $SERVER_NAME"
-echo "  IP Address:    $REMOTE_IP"
-echo "  Environment:   $ENVIRONMENT"
+echo "  Server Name:      $SERVER_NAME"
+echo "  IP Address:       $REMOTE_IP"
+echo "  Instance Name:    $INSTANCE_NAME  (appears in Grafana dropdown)"
+echo "  Environment:      $ENVIRONMENT"
 echo "  MySQL:         $([ "$HAS_MYSQL" == "y" ] && echo "Yes" || echo "No")"
 echo ""
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -146,7 +158,7 @@ cat >> "$PROMETHEUS_CONFIG" << EOF
     static_configs:
       - targets: ['$REMOTE_IP:9100']
         labels:
-          instance: '$SERVER_NAME'
+          instance: '$INSTANCE_NAME (OS)'
           server: '$SERVER_NAME'
           environment: '$ENVIRONMENT'
 EOF
@@ -158,7 +170,7 @@ cat >> "$PROMETHEUS_CONFIG" << EOF
     static_configs:
       - targets: ['$REMOTE_IP:9104']
         labels:
-          instance: '$SERVER_NAME-mysql'
+          instance: '$INSTANCE_NAME (MySQL)'
           server: '$SERVER_NAME'
           environment: '$ENVIRONMENT'
 EOF
@@ -219,6 +231,6 @@ echo ""
 echo "View targets:    http://localhost:9090/targets"
 echo "View in Grafana: http://localhost:3000"
 echo ""
-echo "In Grafana dashboards, select '$SERVER_NAME' from the"
-echo "instance/server dropdown to view this server's metrics."
+echo "In Grafana dashboards, select '$INSTANCE_NAME (OS)' or"
+echo "'$INSTANCE_NAME (MySQL)' from the instance dropdown."
 echo ""
