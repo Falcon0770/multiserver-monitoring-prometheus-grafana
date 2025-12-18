@@ -49,6 +49,30 @@ services:
       - ./mysql-exporter/.my.cnf:/.my.cnf:ro
     command:
       - '--config.my-cnf=/.my.cnf'
+      # Enable additional collectors for complete MySQL monitoring
+      - '--collect.global_status'
+      - '--collect.global_variables'
+      - '--collect.slave_status'
+      - '--collect.info_schema.innodb_cmp'
+      - '--collect.info_schema.innodb_cmpmem'
+      - '--collect.info_schema.query_response_time'
+      - '--collect.info_schema.processlist'
+      - '--collect.info_schema.tables'
+      - '--collect.info_schema.innodb_tablespaces'
+      - '--collect.info_schema.innodb_metrics'
+      - '--collect.auto_increment.columns'
+      - '--collect.binlog_size'
+      - '--collect.perf_schema.tableiowaits'
+      - '--collect.perf_schema.indexiowaits'
+      - '--collect.perf_schema.tablelocks'
+      - '--collect.perf_schema.eventsstatements'
+      - '--collect.perf_schema.eventsstatementssum'
+      - '--collect.perf_schema.eventswaits'
+      - '--collect.perf_schema.file_events'
+      - '--collect.perf_schema.file_instances'
+      - '--collect.perf_schema.memory_events'
+      - '--collect.engine_innodb_status'
+      - '--collect.mysql.user'
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

@@ -3,6 +3,22 @@
                          Quick Start Guide
 ================================================================================
 
+IMPORTANT: This folder contains setup scripts for BOTH Linux and Windows:
+
+  📁 remote-server-setup/
+  ├── setup.sh                    ← For LINUX servers (this folder)
+  ├── README.txt                  ← You are here
+  └── windows/
+      ├── setup-windows-exporter.ps1   ← For WINDOWS servers
+      └── WINDOWS_SETUP_GUIDE.md       ← Windows instructions
+
+For WINDOWS servers: See the windows/ subfolder
+For LINUX servers: Continue reading below
+
+================================================================================
+                         LINUX SERVER SETUP
+================================================================================
+
 STEP 1: CREATE MYSQL USER (Only if you have MySQL to monitor)
 --------------------------------------------------------------------------------
 

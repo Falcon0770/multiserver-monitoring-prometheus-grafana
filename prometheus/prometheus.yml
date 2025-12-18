@@ -19,18 +19,22 @@ scrape_configs:
     static_configs:
       - targets: ['node-exporter:9100']
         labels:
-          instance: '10.20.0.39 (OS)'
+          instance: '10.20.0.39'
+          node_name: 'main-server'
           server: 'main-server'
           environment: 'production'
+          service: 'os'
 
   # Monitor MySQL database on main server
   - job_name: 'mysql-exporter'
     static_configs:
       - targets: ['mysql-exporter:9104']
         labels:
-          instance: '10.20.0.39(mysql)'
+          instance: '10.20.0.39'
+          node_name: 'main-server'
           server: 'main-server'
           environment: 'production'
+          service: 'mysql'
 
   # ============================================
   # aicertlmsdevlearndb (10.20.0.38)
@@ -41,14 +45,18 @@ scrape_configs:
     static_configs:
       - targets: ['10.20.0.38:9100']
         labels:
-          instance: '10.20.0.38 (OS)'
+          instance: '10.20.0.38'
+          node_name: 'aicertlmsdevlearndb'
           server: 'aicertlmsdevlearndb'
           environment: 'development'
+          service: 'os'
 
   - job_name: 'mysql-exporter-aicertlmsdevlearndb'
     static_configs:
       - targets: ['10.20.0.38:9104']
         labels:
-          instance: '10.20.0.38 (MySQL)'
+          instance: '10.20.0.38'
+          node_name: 'aicertlmsdevlearndb'
           server: 'aicertlmsdevlearndb'
           environment: 'development'
+          service: 'mysql'
