@@ -23,10 +23,10 @@ $NssmVersion = "2.24"
 # ============================================
 Clear-Host
 Write-Host ""
-Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Blue
-Write-Host "║     FULL MONITORING STACK SETUP FOR WINDOWS               ║" -ForegroundColor Blue
-Write-Host "║     Prometheus + Grafana + Windows Exporter               ║" -ForegroundColor Blue
-Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Blue
+Write-Host "+=============================================================+" -ForegroundColor Blue
+Write-Host "|     FULL MONITORING STACK SETUP FOR WINDOWS                 |" -ForegroundColor Blue
+Write-Host "|     Prometheus + Grafana + Windows Exporter                 |" -ForegroundColor Blue
+Write-Host "+=============================================================+" -ForegroundColor Blue
 Write-Host ""
 
 $ServerName = $env:COMPUTERNAME
@@ -53,7 +53,7 @@ foreach ($Dir in $Directories) {
     New-Item -ItemType Directory -Force -Path $Dir | Out-Null
 }
 
-Write-Host "✓ Directories created" -ForegroundColor Green
+Write-Host "[OK] Directories created" -ForegroundColor Green
 Write-Host ""
 
 # ============================================
@@ -70,15 +70,15 @@ if (-not (Test-Path $NssmExe)) {
         Invoke-WebRequest -Uri $NssmUrl -OutFile $NssmZip -UseBasicParsing
         Expand-Archive -Path $NssmZip -DestinationPath "$env:TEMP\nssm" -Force
         Copy-Item "$env:TEMP\nssm\nssm-$NssmVersion\win64\nssm.exe" $NssmExe
-        Write-Host "✓ NSSM downloaded" -ForegroundColor Green
+        Write-Host "[OK] NSSM downloaded" -ForegroundColor Green
     }
     catch {
-        Write-Host "⚠ Could not download NSSM: $_" -ForegroundColor Yellow
+        Write-Host "[WARN] Could not download NSSM: $_" -ForegroundColor Yellow
         Write-Host "  You may need to install services manually" -ForegroundColor Yellow
     }
 }
 else {
-    Write-Host "✓ NSSM already exists" -ForegroundColor Green
+    Write-Host "[OK] NSSM already exists" -ForegroundColor Green
 }
 Write-Host ""
 
@@ -89,7 +89,7 @@ Write-Host "[3/7] Installing Windows Exporter..." -ForegroundColor Yellow
 
 $ExistingWE = Get-Service -Name "windows_exporter" -ErrorAction SilentlyContinue
 if ($ExistingWE) {
-    Write-Host "✓ Windows Exporter already installed" -ForegroundColor Green
+    Write-Host "[OK] Windows Exporter already installed" -ForegroundColor Green
 }
 else {
     $WeUrl = "https://github.com/prometheus-community/windows_exporter/releases/download/v$WindowsExporterVersion/windows_exporter-$WindowsExporterVersion-amd64.msi"
@@ -108,10 +108,10 @@ else {
     $Process = Start-Process -FilePath "msiexec.exe" -ArgumentList $MsiArgs -Wait -PassThru
     
     if ($Process.ExitCode -eq 0) {
-        Write-Host "✓ Windows Exporter installed" -ForegroundColor Green
+        Write-Host "[OK] Windows Exporter installed" -ForegroundColor Green
     }
     else {
-        Write-Host "⚠ Windows Exporter installation returned code: $($Process.ExitCode)" -ForegroundColor Yellow
+        Write-Host "[WARN] Windows Exporter installation returned code: $($Process.ExitCode)" -ForegroundColor Yellow
     }
 }
 Write-Host ""
@@ -144,10 +144,10 @@ if (-not (Test-Path $PromExe)) {
     # Copy files to install directory
     Copy-Item "$env:TEMP\prom\prometheus-$PrometheusVersion.windows-amd64\*" $PromDir -Recurse -Force
     
-    Write-Host "✓ Prometheus downloaded and extracted" -ForegroundColor Green
+    Write-Host "[OK] Prometheus downloaded and extracted" -ForegroundColor Green
 }
 else {
-    Write-Host "✓ Prometheus already exists" -ForegroundColor Green
+    Write-Host "[OK] Prometheus already exists" -ForegroundColor Green
 }
 
 # Create Prometheus configuration
@@ -194,15 +194,15 @@ if (-not $ExistingProm) {
         & $NssmExe set Prometheus Start SERVICE_AUTO_START
         
         Start-Service Prometheus
-        Write-Host "✓ Prometheus service installed and started" -ForegroundColor Green
+        Write-Host "[OK] Prometheus service installed and started" -ForegroundColor Green
     }
     else {
-        Write-Host "⚠ NSSM not available. Please install Prometheus service manually." -ForegroundColor Yellow
+        Write-Host "[WARN] NSSM not available. Please install Prometheus service manually." -ForegroundColor Yellow
     }
 }
 else {
     Start-Service Prometheus
-    Write-Host "✓ Prometheus service restarted" -ForegroundColor Green
+    Write-Host "[OK] Prometheus service restarted" -ForegroundColor Green
 }
 Write-Host ""
 
@@ -213,7 +213,7 @@ Write-Host "[5/7] Installing Grafana..." -ForegroundColor Yellow
 
 $ExistingGrafana = Get-Service -Name "Grafana" -ErrorAction SilentlyContinue
 if ($ExistingGrafana) {
-    Write-Host "✓ Grafana already installed" -ForegroundColor Green
+    Write-Host "[OK] Grafana already installed" -ForegroundColor Green
 }
 else {
     $GrafanaUrl = "https://dl.grafana.com/oss/release/grafana-$GrafanaVersion.windows-amd64.msi"
@@ -228,10 +228,10 @@ else {
     if ($Process.ExitCode -eq 0) {
         Start-Sleep -Seconds 3
         Start-Service Grafana -ErrorAction SilentlyContinue
-        Write-Host "✓ Grafana installed and started" -ForegroundColor Green
+        Write-Host "[OK] Grafana installed and started" -ForegroundColor Green
     }
     else {
-        Write-Host "⚠ Grafana installation returned code: $($Process.ExitCode)" -ForegroundColor Yellow
+        Write-Host "[WARN] Grafana installation returned code: $($Process.ExitCode)" -ForegroundColor Yellow
     }
 }
 Write-Host ""
@@ -256,10 +256,10 @@ foreach ($Rule in $FirewallRules) {
             -LocalPort $Rule.Port `
             -Action Allow `
             -Profile Any | Out-Null
-        Write-Host "  ✓ Firewall rule created for $($Rule.Name) (port $($Rule.Port))" -ForegroundColor Green
+        Write-Host "  [OK] Firewall rule created for $($Rule.Name) (port $($Rule.Port))" -ForegroundColor Green
     }
     else {
-        Write-Host "  ✓ Firewall rule exists for $($Rule.Name)" -ForegroundColor Green
+        Write-Host "  [OK] Firewall rule exists for $($Rule.Name)" -ForegroundColor Green
     }
 }
 Write-Host ""
@@ -282,19 +282,19 @@ $AllGood = $true
 foreach ($Svc in $Services) {
     $Service = Get-Service -Name $Svc.Name -ErrorAction SilentlyContinue
     if ($Service -and $Service.Status -eq "Running") {
-        Write-Host "  ✓ $($Svc.Display) is running" -ForegroundColor Green
+        Write-Host "  [OK] $($Svc.Display) is running" -ForegroundColor Green
         
         # Test port
         try {
             $Response = Invoke-WebRequest -Uri "http://localhost:$($Svc.Port)/" -UseBasicParsing -TimeoutSec 3 -ErrorAction SilentlyContinue
-            Write-Host "    └─ Port $($Svc.Port) responding" -ForegroundColor Green
+            Write-Host "    -> Port $($Svc.Port) responding" -ForegroundColor Green
         }
         catch {
-            Write-Host "    └─ Port $($Svc.Port) not responding yet (may take a moment)" -ForegroundColor Yellow
+            Write-Host "    -> Port $($Svc.Port) not responding yet (may take a moment)" -ForegroundColor Yellow
         }
     }
     else {
-        Write-Host "  ✗ $($Svc.Display) is not running" -ForegroundColor Red
+        Write-Host "  [FAIL] $($Svc.Display) is not running" -ForegroundColor Red
         $AllGood = $false
     }
 }
@@ -304,20 +304,20 @@ Write-Host ""
 # Done!
 # ============================================
 if ($AllGood) {
-    Write-Host "╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Green
-    Write-Host "║              INSTALLATION COMPLETE!                       ║" -ForegroundColor Green
-    Write-Host "╚═══════════════════════════════════════════════════════════╝" -ForegroundColor Green
+    Write-Host "+=============================================================+" -ForegroundColor Green
+    Write-Host "|              INSTALLATION COMPLETE!                         |" -ForegroundColor Green
+    Write-Host "+=============================================================+" -ForegroundColor Green
 }
 else {
-    Write-Host "╔═══════════════════════════════════════════════════════════╗" -ForegroundColor Yellow
-    Write-Host "║         INSTALLATION COMPLETE (with warnings)             ║" -ForegroundColor Yellow
-    Write-Host "╚═══════════════════════════════════════════════════════════╝" -ForegroundColor Yellow
+    Write-Host "+=============================================================+" -ForegroundColor Yellow
+    Write-Host "|         INSTALLATION COMPLETE (with warnings)               |" -ForegroundColor Yellow
+    Write-Host "+=============================================================+" -ForegroundColor Yellow
 }
 
 Write-Host ""
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Blue
-Write-Host "                     ACCESS URLS                          " -ForegroundColor Yellow
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Blue
+Write-Host "-------------------------------------------------------------" -ForegroundColor Blue
+Write-Host "                     ACCESS URLS                             " -ForegroundColor Yellow
+Write-Host "-------------------------------------------------------------" -ForegroundColor Blue
 Write-Host ""
 Write-Host "  Grafana:          http://${ServerIP}:3000" -ForegroundColor Cyan
 Write-Host "                    Username: admin" -ForegroundColor Gray
@@ -327,24 +327,23 @@ Write-Host "  Prometheus:       http://${ServerIP}:9090" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  Windows Exporter: http://${ServerIP}:9182/metrics" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Blue
+Write-Host "-------------------------------------------------------------" -ForegroundColor Blue
 Write-Host ""
 Write-Host "NEXT STEPS:" -ForegroundColor Yellow
 Write-Host ""
 Write-Host "1. Open Grafana: http://${ServerIP}:3000" -ForegroundColor White
 Write-Host "2. Login with admin / admin" -ForegroundColor White
-Write-Host "3. Go to: Connections → Data Sources → Add data source" -ForegroundColor White
+Write-Host "3. Go to: Connections -> Data Sources -> Add data source" -ForegroundColor White
 Write-Host "4. Select 'Prometheus' and set URL to: http://localhost:9090" -ForegroundColor White
 Write-Host "5. Click 'Save & Test'" -ForegroundColor White
-Write-Host "6. Go to: Dashboards → Import → Enter ID: 14694 → Load → Import" -ForegroundColor White
+Write-Host "6. Go to: Dashboards -> Import -> Enter ID: 14694 -> Load -> Import" -ForegroundColor White
 Write-Host ""
-Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Blue
+Write-Host "-------------------------------------------------------------" -ForegroundColor Blue
 Write-Host ""
 Write-Host "Installation directory: $InstallDir" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Useful commands:" -ForegroundColor Cyan
 Write-Host "  Check services:   Get-Service Prometheus, Grafana, windows_exporter"
 Write-Host "  Restart all:      Restart-Service Prometheus, Grafana, windows_exporter"
-Write-Host "  View Prom config: notepad $PromDir\prometheus.yml"
+Write-Host ('  View Prom config: notepad ' + $PromDir + '\prometheus.yml')
 Write-Host ""
-
